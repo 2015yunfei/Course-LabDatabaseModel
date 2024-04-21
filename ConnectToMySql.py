@@ -45,40 +45,57 @@ def Create_3_table(connection):
     # 创建表的SQL语句
     create_student_table = """
     CREATE TABLE IF NOT EXISTS student (
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        name VARCHAR(50) NOT NULL,
-        age INT,
-        gender VARCHAR(10)
-    );
-    """
-
-    create_sc_table = """
-    CREATE TABLE IF NOT EXISTS sc (
-        student_id INT,
-        course_id INT,
-        grade INT
+        Sno CHAR(20) PRIMARY KEY,
+        Sname CHAR(20) UNIQUE,
+        Ssex CHAR(8),
+        Sage SMALLINT,
+        Sdept CHAR(20),
+        Scholarship CHAR(20)
     );
     """
 
     create_course_table = """
     CREATE TABLE IF NOT EXISTS course (
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        name VARCHAR(50) NOT NULL,
-        teacher VARCHAR(50)
+        Cno CHAR(20) PRIMARY KEY,
+        Cname CHAR(40),
+        Cpno CHAR(20),
+        Ccredit SMALLINT,
+        FOREIGN KEY (Cpno) REFERENCES course(Cno)
     );
     """
 
-    # 执行创建表的命令
+    create_sc_table = """
+    CREATE TABLE IF NOT EXISTS sc (
+        Sno CHAR(20),
+        Cno CHAR(20),
+        Grade SMALLINT,
+        PRIMARY KEY (Sno, Cno),
+        FOREIGN KEY (Sno) REFERENCES student(Sno),
+        FOREIGN KEY (Cno) REFERENCES course(Cno)
+    );
+    """
     try:
         with connection.cursor() as cursor:
+            # 创建 student 表
             cursor.execute(create_student_table)
-            cursor.execute(create_sc_table)
+            print("student 表创建成功")
+
+            # 创建 course 表
             cursor.execute(create_course_table)
+            print("course 表创建成功")
+
+            # 创建 sc 表
+            cursor.execute(create_sc_table)
+            print("sc 表创建成功")
+
         # 提交更改
         connection.commit()
-    except pymysql.Error as e:
-        print(f"数据库错误：{e}")
-    # finally:
+
+    except pymysql.err.IntegrityError as e:
+        print("数据库错误：", e)
+
+    except pymysql.err.OperationalError as e:
+        print("数据库错误：", e)
 
 
 # 级联删除三个表的函数
@@ -106,6 +123,7 @@ def cascade_delete_tables(connection):
         connection.commit()
 
         print("所有表的记录已级联删除。")
+
     except pymysql.Error as e:
         print(f"数据库错误：{e}")
     # finally:

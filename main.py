@@ -3,11 +3,11 @@ import pymysql.cursors
 import Windows as win
 import ConnectToMySql as con
 
-# 创建界面实例
-gui = win.create_gui()
-
 # 连接到数据库
 connection = con.connect()
+
+# 创建界面实例
+gui = win.create_gui(connection)
 
 # 在主界面运行后立即执行do_after_gui_runs函数
 gui.after(0, win.do_after_gui_runs(gui, connection))
