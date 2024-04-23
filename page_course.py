@@ -1,9 +1,13 @@
+import Debug
 import tkinter as tk
 from tkinter import messagebox
 import pymysql.cursors
+import pymysql
+from pymysql.err import Error
 import ConnectToMySql as Con
 import SqlCreate as Cre
 import SqlModify as Mod
+import SqlDelete as Del
 import func
 import page_sc_add
 
@@ -85,10 +89,6 @@ def on_modify_course(root, connect):
     window.mainloop()
 
 
-def on_delete_course(root, connect):
-    print("删除没有选课的课程信息")
-
-
 def course_information_maintenance(root, connect):
     # 创建主窗口
     window = tk.Toplevel(root)  # 这里使用root作为父窗口
@@ -118,7 +118,7 @@ def course_information_maintenance(root, connect):
     row_frame = tk.Frame(content_frame)
     row_frame.pack(fill="x", padx=10, pady=10)  # 使用填充使行之间有间隔
     delete_button = tk.Button(row_frame, text="删除没有选课信息的课程",
-                              command=lambda: on_delete_course(window, connect), width="30",
+                              command=lambda: Del.delete_course_not_in_sc(connect), width="30",
                               height="2")
     delete_button.pack()
 

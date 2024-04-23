@@ -3,7 +3,6 @@ import pymysql.cursors
 import MainWindows as Win
 import ConnectToMySql as Cno
 
-import func as Che
 
 # 连接到数据库
 connection = Cno.connect()

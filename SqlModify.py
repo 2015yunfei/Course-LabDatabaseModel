@@ -1,4 +1,6 @@
 import pymysql.cursors
+import pymysql
+from pymysql.err import Error
 import tkinter as tk
 from tkinter import messagebox
 import func
@@ -22,7 +24,7 @@ def modify_course(Cno_entry, Cname_entry, Cpno_entry, Ccredit_entry, connect):
         return
 
     # 检查记录是否存在
-    if not func.check(connect, course=True, Cno=Cno):
+    if not func.check_single(connect, course=True, Cno=Cno):
         messagebox.showerror("错误", "课程号不存在")
         return
 
@@ -32,17 +34,7 @@ def modify_course(Cno_entry, Cname_entry, Cpno_entry, Ccredit_entry, connect):
             cursor = connect.cursor()
             cursor.execute("UPDATE Course SET Cname = %s WHERE Cno = %s", (Cname, Cno))
             connect.commit()
-        except pymysql.err.IntegrityError as e:
-            # 捕获IntegrityError异常
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        except pymysql.err.ProgrammingError as e:
-            # 捕获ProgrammingError异常
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        except pymysql.err.InternalError as e:
-            # 捕获InternalError异常
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        except pymysql.err.OperationalError as e:
-            # 捕获OperationalError异常
+        except Error as e:
             messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
         finally:
             messagebox.showinfo("成功", "已修改课程号为：%s 的课程信息Cname" % Cno)
@@ -52,17 +44,7 @@ def modify_course(Cno_entry, Cname_entry, Cpno_entry, Ccredit_entry, connect):
             cursor = connect.cursor()
             cursor.execute("UPDATE Course SET Cpno = %s WHERE Cno = %s", (Cpno, Cno))
             connect.commit()
-        except pymysql.err.IntegrityError as e:
-            # 捕获IntegrityError异常
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        except pymysql.err.ProgrammingError as e:
-            # 捕获ProgrammingError异常
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        except pymysql.err.InternalError as e:
-            # 捕获InternalError异常
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        except pymysql.err.OperationalError as e:
-            # 捕获OperationalError异常
+        except Error as e:
             messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
         finally:
             messagebox.showinfo("成功", "已修改课程号为：%s 的课程信息Cpno" % Cno)
@@ -72,17 +54,7 @@ def modify_course(Cno_entry, Cname_entry, Cpno_entry, Ccredit_entry, connect):
             cursor = connect.cursor()
             cursor.execute("UPDATE Course SET Ccredit = %s WHERE Cno = %s", (Ccredit, Cno))
             connect.commit()
-        except pymysql.err.IntegrityError as e:
-            # 捕获IntegrityError异常
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        except pymysql.err.ProgrammingError as e:
-            # 捕获ProgrammingError异常
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        except pymysql.err.InternalError as e:
-            # 捕获InternalError异常
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        except pymysql.err.OperationalError as e:
-            # 捕获OperationalError异常
+        except Error as e:
             messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
         finally:
             messagebox.showinfo("成功", "已修改课程号为：%s 的课程信息Ccredit" % Cno)
@@ -113,7 +85,7 @@ def modify_stu_info_sno(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_en
         messagebox.showerror("错误", "年龄必须是数字")
         return
 
-    if not func.check(connect, student=True, Sno=Sno):
+    if not func.check_single(connect, student=True, Sno=Sno):
         messagebox.showerror("错误", "学号不存在")
     else:
         # 将数据更新到数据库中
@@ -122,17 +94,7 @@ def modify_stu_info_sno(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_en
                 cursor = connect.cursor()
                 cursor.execute("UPDATE student SET Sname = %s WHERE Sno = %s", (Sname, Sno))
                 connect.commit()
-            except pymysql.err.IntegrityError as e:
-                # 捕获IntegrityError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.ProgrammingError as e:
-                # 捕获ProgrammingError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.InternalError as e:
-                # 捕获InternalError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.OperationalError as e:
-                # 捕获OperationalError异常
+            except Error as e:
                 messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
             finally:
                 messagebox.showinfo("成功", "已修改学号为：%s 的学生信息Sname" % Sno)
@@ -141,16 +103,7 @@ def modify_stu_info_sno(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_en
                 cursor = connect.cursor()
                 cursor.execute("UPDATE student SET Ssex = %s WHERE Sno = %s", (Ssex, Sno))
                 connect.commit()
-            except pymysql.err.IntegrityError as e:
-                # 捕获IntegrityError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.ProgrammingError as e:
-                # 捕获ProgrammingError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.InternalError as e:
-                # 捕获InternalError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.OperationalError as e:
+            except Error as e:
                 # 捕获OperationalError异常
                 messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
             finally:
@@ -160,17 +113,7 @@ def modify_stu_info_sno(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_en
                 cursor = connect.cursor()
                 cursor.execute("UPDATE student SET Sage = %s WHERE Sno = %s", (Sage, Sno))
                 connect.commit()
-            except pymysql.err.IntegrityError as e:
-                # 捕获IntegrityError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.ProgrammingError as e:
-                # 捕获ProgrammingError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.InternalError as e:
-                # 捕获InternalError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.OperationalError as e:
-                # 捕获OperationalError异常
+            except Error as e:
                 messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
             finally:
                 messagebox.showinfo("成功", "已修改学号为：%s 的学生信息Sage" % Sno)
@@ -179,17 +122,7 @@ def modify_stu_info_sno(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_en
                 cursor = connect.cursor()
                 cursor.execute("UPDATE student SET Sdept = %s WHERE Sno = %s", (Sdept, Sno))
                 connect.commit()
-            except pymysql.err.IntegrityError as e:
-                # 捕获IntegrityError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.ProgrammingError as e:
-                # 捕获ProgrammingError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.InternalError as e:
-                # 捕获InternalError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.OperationalError as e:
-                # 捕获OperationalError异常
+            except Error as e:
                 messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
             finally:
                 messagebox.showinfo("成功", "已修改学号为：%s 的学生信息Sdept" % Sno)
@@ -198,18 +131,8 @@ def modify_stu_info_sno(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_en
                 cursor = connect.cursor()
                 cursor.execute("UPDATE student SET Scholarship = %s WHERE Sno = %s", (Scholarship, Sno))
                 connect.commit()
-            except pymysql.err.IntegrityError as e:
-                # 捕获IntegrityError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.ProgrammingError as e:
-                # 捕获ProgrammingError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.InternalError as e:
-                # 捕获InternalError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            except pymysql.err.OperationalError as e:
-                # 捕获OperationalError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
+            except Error as e:
+                messagebox.showerror("数据库错误", f"更新学生奖学金信息时发生错误：{str(e)}")
             finally:
                 messagebox.showinfo("成功", "已修改学号为：%s 的学生信息Scholarship" % Sno)
 
@@ -222,5 +145,37 @@ def modify_stu_info_sno(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_en
         scholarship_entry.delete(0, tk.END)
 
 
-def modify_stu_grade_sno():
-    pass
+def modify_stu_grade(sno_entry, cno_entry, grade_entry, connect):
+    # 获取输入框的内容
+    Sno = sno_entry.get()
+    Cno = cno_entry.get()
+    Grade = grade_entry.get()
+
+    # 检查主键是否为空
+    if not Sno:
+        messagebox.showerror("错误", "学号不能为空")
+        return
+    if not Cno:
+        messagebox.showerror("错误", "课程编号不能为空")
+        return
+    if not Grade:
+        messagebox.showerror("错误", "成绩不能为空")
+        return
+
+    # 检查记录是否存在
+    if not func.check_sc(connect, Sno, Cno):
+        messagebox.showerror("错误", "学号为：%s 学生没有课程号为：%s 课程的成绩" % (Sno, Cno))
+        return
+
+    try:
+        cursor = connect.cursor()
+        update_sql = "UPDATE sc SET Grade = %s WHERE Sno = %s AND Cno = %s"
+        cursor.execute(update_sql, (Grade, Sno, Cno))
+        connect.commit()
+    except Error as err:
+        print("Something went wrong: {}".format(err))
+    finally:
+        messagebox.showinfo("成功", "已经将学号为：%s 的学生课程号为：%s 的成绩修改为：%s" % (Sno, Cno, Grade))
+        sno_entry.delete(0, tk.END)
+        cno_entry.delete(0, tk.END)
+        grade_entry.delete(0, tk.END)

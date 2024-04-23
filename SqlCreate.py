@@ -24,7 +24,7 @@ def add_student(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_entry, sch
         return
 
     # 检查记录是否存在
-    if func.check(connect, student=True, Sno=Sno):
+    if func.check_single(connect, student=True, Sno=Sno):
         messagebox.showerror("错误", "学号已经存在，插入失败！")
     else:
         # 这里可以添加将数据插入到数据库的逻辑
@@ -77,7 +77,7 @@ def add_course(Cno_entry, Cname_entry, Cpno_entry, Ccredit_entry, connect):
         return
 
     # 检查记录是否存在
-    if func.check(connect, course=True, Cno=Cno):
+    if func.check_single(connect, course=True, Cno=Cno):
         messagebox.showerror("错误", "课程号已经存在，插入失败！")
     else:
         # 将数据插入到数据库中
@@ -124,7 +124,7 @@ def add_grades(Sno_entry, Cno_entry, Grade_entry, connect):
         return
 
     # 检查记录是否存在
-    if func.check(connect, sc=True, Sno=Sno, Cno=Cno):
+    if func.check_single(connect, sc=True, Sno=Sno, Cno=Cno):
         messagebox.showerror("错误", "学号为%s的学生成绩已经存在已经存在，插入失败！" % Sno)
     else:
         # 将数据插入到数据库中
