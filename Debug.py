@@ -1,1 +1,1 @@
-Debug = 1
+debug_mod = 1

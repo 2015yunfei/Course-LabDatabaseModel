@@ -25,7 +25,7 @@ def delete_course_not_in_sc(connect):
         print("Something went wrong: {}".format(err))
         return
 
-    if Debug.Debug == 1:
+    if Debug.debug_mod == 1:
         for row in result:
             print(row['Cno'])
 

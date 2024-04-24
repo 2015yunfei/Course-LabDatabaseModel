@@ -103,7 +103,7 @@ def check_window_no(root, connection):
     label = tk.Label(window, text="三个基础表未创建，已经新的空表！")
     label.pack()
 
-    Con.Create_3_table(connection)
+    Con.create_3_table(connection)
 
     # 启动事件循环，使窗口保持打开状态
     window.mainloop()
@@ -123,7 +123,7 @@ def check_window_yes(root, connection):
     # 创建两个按钮，并设置它们的文本
     button1 = tk.Button(window,
                         text="删除旧表",
-                        command=lambda: [Con.cascade_delete_tables(connection), Con.Create_3_table(connection),
+                        command=lambda: [Con.cascade_delete_tables(connection), Con.create_3_table(connection),
                                          delete_exist_tables_win(window)])
     button2 = tk.Button(window, text="使用原有数据", command=lambda: func.close_window(window))
 
@@ -148,6 +148,6 @@ def do_after_gui_runs(root, connection):
 
         print("不存在表")
 
-        Con.Create_3_table(connection)
+        Con.create_3_table(connection)
         # 调用函数以弹出窗口
         check_window_no(root, connection)

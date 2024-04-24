@@ -1,7 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
+from pymysql.err import Error
 import pymysql.cursors
 import ConnectToMySql as Con
+import Debug
 import SqlCreate as Cre
 import SqlModify as Mod
 import SqlSelect
@@ -43,13 +45,18 @@ def query_student_info(root, connect):
         # 编写SQL查询语句
         query = "SELECT Sname, Ssex, Sage, Sdept, Scholarship FROM Student WHERE Sno = %s"
 
-        # 执行查询
-        cursor = connect.cursor()
-        cursor.execute(query, (Sno,))
+        try:
+            # 执行查询
+            cursor = connect.cursor()
+            cursor.execute(query, (Sno,))
+            result = cursor.fetchone()
+        except Error as e:
+            messagebox.showerror("数据库错误", f"获得学生信息时发生错误：{str(e)}")
 
-        result = cursor.fetchone()
         flag = True
-        print(result)
+
+        if Debug.debug_mod == 1:
+            print(result)
 
     def update_label():
         nonlocal result  # 声明result为非局部变量

@@ -41,7 +41,7 @@ def check_table_exists(connection, table_name):
             return False
 
 
-def Create_3_table(connection):
+def create_3_table(connection):
     # 创建表的SQL语句
     create_student_table = """
     CREATE TABLE IF NOT EXISTS student (
@@ -127,5 +127,5 @@ def cascade_delete_tables(connection):
     except pymysql.Error as e:
         print(f"数据库错误：{e}")
     # finally:
-        # 关闭连接
-        # connection.close()
+    # 关闭连接
+    # connection.close()
