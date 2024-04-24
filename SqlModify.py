@@ -1,8 +1,8 @@
 import pymysql.cursors
 import pymysql
 from pymysql.err import Error
-import tkinter as tk
 from tkinter import messagebox
+import tkinter as tk
 import func
 
 

@@ -1,23 +1,18 @@
 import pymysql.cursors
+import Debug
+from pymysql.err import Error
+from tkinter import messagebox
 
 
 def connect():
-    # 数据库连接参数
-    host = '47.94.173.36'
-    port = 3306
-    user = '2015yunfei'
-    password = 'u202112032'
-    db = 'cse_qyf'
-    charset = 'utf8mb4'
-
     # 创建连接
     connection = pymysql.connect(
-        host=host,
-        port=port,
-        user=user,
-        password=password,
-        db=db,
-        charset=charset,
+        host=Debug.host,
+        port=Debug.port,
+        user=Debug.user,
+        password=Debug.password,
+        db=Debug.db,
+        charset=Debug.charset,
         cursorclass=pymysql.cursors.DictCursor)
 
     return connection
@@ -78,24 +73,23 @@ def create_3_table(connection):
         with connection.cursor() as cursor:
             # 创建 student 表
             cursor.execute(create_student_table)
-            print("student 表创建成功")
+            if Debug.debug_mod == 1:
+                print("student 表创建成功")
 
             # 创建 course 表
             cursor.execute(create_course_table)
-            print("course 表创建成功")
+            if Debug.debug_mod == 1:
+                print("course 表创建成功")
 
             # 创建 sc 表
             cursor.execute(create_sc_table)
-            print("sc 表创建成功")
+            if Debug.debug_mod == 1:
+                print("sc 表创建成功")
 
         # 提交更改
         connection.commit()
-
-    except pymysql.err.IntegrityError as e:
-        print("数据库错误：", e)
-
-    except pymysql.err.OperationalError as e:
-        print("数据库错误：", e)
+    except Error as e:
+        messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
 
 
 # 级联删除三个表的函数
@@ -124,8 +118,9 @@ def cascade_delete_tables(connection):
 
         print("所有表的记录已级联删除。")
 
-    except pymysql.Error as e:
-        print(f"数据库错误：{e}")
+    except Error as e:
+        messagebox.showerror("数据库错误", f"删除旧表时发生错误：{str(e)}")
+
     # finally:
     # 关闭连接
     # connection.close()

@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import pymysql.cursors
 import ConnectToMySql as Con
+import Debug
 import SqlCreate as Cre
 import SqlModify as Mod
 import func
@@ -13,6 +14,7 @@ import page_select_grades
 import page_select_order
 import page_sc_modify
 import page_select_stu
+import ConnectToMySql
 
 
 def on_button_click(root, index, connection):
@@ -95,11 +97,10 @@ def create_gui(connection):
 def check_window_no(root, connection):
     # 创建一个新的窗口
     window = tk.Toplevel(root)  # 这里使用root作为父窗口
-    window.title("未创建表")
+    window.title("不存在旧表")
     window.geometry("300x70")  # 设置窗口大小
     window.grab_set()
 
-    # 在窗口中添加一个标签，显示文本
     label = tk.Label(window, text="三个基础表未创建，已经新的空表！")
     label.pack()
 
@@ -111,25 +112,37 @@ def check_window_no(root, connection):
 
 def check_window_yes(root, connection):
     # 创建一个新的窗口
-    window = tk.Toplevel(root)  # 这里使用root作为父窗口
+    window = tk.Toplevel(root)
     window.title("表已经存在")
-    window.geometry("300x70")  # 设置窗口大小
+    window.geometry("360x250")
     window.grab_set()
 
+    # 创建一个帧来包含所有内容，以便更容易居中
+    content_frame = tk.Frame(window)
+    content_frame.pack(pady=20)  # 添加一些外部填充
+
+    # 创建一个行帧来包含标签和按钮
+    row_frame = tk.Frame(content_frame)
+    row_frame.pack(fill="x", padx=10, pady=10)  # 使用填充使行之间有间隔
+
     # 在窗口中添加一个标签，显示文本“三个基本表已经存在”
-    label = tk.Label(window, text="三个基本表已经存在")
+    label = tk.Label(row_frame, text="数据库中已经含有三个基本表：\nstudent\ncourse\nsc")
     label.pack()
 
-    # 创建两个按钮，并设置它们的文本
-    button1 = tk.Button(window,
-                        text="删除旧表",
-                        command=lambda: [Con.cascade_delete_tables(connection), Con.create_3_table(connection),
-                                         delete_exist_tables_win(window)])
-    button2 = tk.Button(window, text="使用原有数据", command=lambda: func.close_window(window))
+    # 创建一个行帧来包含标签和按钮
+    row_frame = tk.Frame(content_frame)
+    row_frame.pack(fill="x", padx=10, pady=10)  # 使用填充使行之间有间隔
+    use_new_table = tk.Button(row_frame, text="删除旧表",
+                              command=lambda: [Con.cascade_delete_tables(connection), Con.create_3_table(connection),
+                                               delete_exist_tables_win(window)])
+    # 创建一个行帧来包含标签和按钮
+    row_frame = tk.Frame(content_frame)
+    row_frame.pack(fill="x", padx=10, pady=10)  # 使用填充使行之间有间隔
+    use_old_table = tk.Button(row_frame, text="使用原有数据", command=lambda: func.close_window(window))
 
     # 布局按钮
-    button1.pack(side="left", anchor="center")
-    button2.pack(side="right", anchor="center")
+    use_new_table.pack(anchor="center")
+    use_old_table.pack(anchor="center")
 
     # 启动事件循环，使窗口保持打开状态
     window.mainloop()
@@ -140,13 +153,17 @@ def do_after_gui_runs(root, connection):
     if (Con.check_table_exists(connection, "student") and Con.check_table_exists(connection, "sc")
             and Con.check_table_exists(connection, "course")):
 
-        print("表存在")
+        if Debug.debug_mod == 1:
+            print("表存在")
 
         # 调用函数以弹出窗口
         check_window_yes(root, connection)
     else:
+        # 三个表存在一个或者两个的时候全部删除
+        ConnectToMySql.cascade_delete_tables(connection)
 
-        print("不存在表")
+        if Debug.debug_mod == 1:
+            print("不存在表")
 
         Con.create_3_table(connection)
         # 调用函数以弹出窗口
