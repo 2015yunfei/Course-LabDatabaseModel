@@ -1,13 +1,8 @@
-import tkinter as tk
-import pymysql.cursors
 import MainWindows as Win
 import ConnectToMySql as Cno
 
-
 # 连接到数据库
 connection = Cno.connect()
-
-# print(Che.check(connection, student=True, Sno=12))
 
 # 创建界面实例
 gui = Win.create_gui(connection)

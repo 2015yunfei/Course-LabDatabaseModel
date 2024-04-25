@@ -1,12 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
-import pymysql.cursors
-import ConnectToMySql as Con
 import SqlCreate as Cre
-import SqlModify as Mod
-import func
-import page_sc_add
-import page_course
 
 
 def add_new_student(root, connect):

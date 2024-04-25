@@ -1,5 +1,3 @@
-import pymysql.cursors
-import pymysql
 from pymysql.err import Error
 from tkinter import messagebox
 import tkinter as tk
@@ -29,35 +27,20 @@ def modify_course(Cno_entry, Cname_entry, Cpno_entry, Ccredit_entry, connect):
         return
 
     # 将数据插入到数据库中
-    if Cname:
-        try:
-            cursor = connect.cursor()
+    try:
+        cursor = connect.cursor()
+        if Cname:
             cursor.execute("UPDATE Course SET Cname = %s WHERE Cno = %s", (Cname, Cno))
-            connect.commit()
-        except Error as e:
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        finally:
-            messagebox.showinfo("成功", "已修改课程号为：%s 的课程信息Cname" % Cno)
-
-    if Cpno:
-        try:
-            cursor = connect.cursor()
+        if Cpno:
             cursor.execute("UPDATE Course SET Cpno = %s WHERE Cno = %s", (Cpno, Cno))
-            connect.commit()
-        except Error as e:
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        finally:
-            messagebox.showinfo("成功", "已修改课程号为：%s 的课程信息Cpno" % Cno)
-
-    if Ccredit:
-        try:
-            cursor = connect.cursor()
+        if Ccredit:
             cursor.execute("UPDATE Course SET Ccredit = %s WHERE Cno = %s", (Ccredit, Cno))
-            connect.commit()
-        except Error as e:
-            messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
-        finally:
-            messagebox.showinfo("成功", "已修改课程号为：%s 的课程信息Ccredit" % Cno)
+        connect.commit()
+    except Error as e:
+        connect.rollback()
+        messagebox.showerror("数据库错误", f"更新课程信息时发生错误：{str(e)}")
+    finally:
+        messagebox.showinfo("成功", "课程信息已经更新")
 
         # 清空输入框
         Cno_entry.delete(0, tk.END)
@@ -88,61 +71,32 @@ def modify_stu_info_sno(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_en
     if not func.check_single(connect, student=True, Sno=Sno):
         messagebox.showerror("错误", "学号不存在")
     else:
-        # 将数据更新到数据库中
-        if Sname:
-            try:
-                cursor = connect.cursor()
+        # 将存在更新的部分数据更新到数据库中
+        try:
+            cursor = connect.cursor()
+            if Sname:
                 cursor.execute("UPDATE student SET Sname = %s WHERE Sno = %s", (Sname, Sno))
-                connect.commit()
-            except Error as e:
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            finally:
-                messagebox.showinfo("成功", "已修改学号为：%s 的学生信息Sname" % Sno)
-        if Ssex:
-            try:
-                cursor = connect.cursor()
+            if Ssex:
                 cursor.execute("UPDATE student SET Ssex = %s WHERE Sno = %s", (Ssex, Sno))
-                connect.commit()
-            except Error as e:
-                # 捕获OperationalError异常
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            finally:
-                messagebox.showinfo("成功", "已修改学号为：%s 的学生信息Ssex" % Sno)
-        if Sage:
-            try:
-                cursor = connect.cursor()
+            if Sage:
                 cursor.execute("UPDATE student SET Sage = %s WHERE Sno = %s", (Sage, Sno))
-                connect.commit()
-            except Error as e:
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            finally:
-                messagebox.showinfo("成功", "已修改学号为：%s 的学生信息Sage" % Sno)
-        if Sdept:
-            try:
-                cursor = connect.cursor()
+            if Sdept:
                 cursor.execute("UPDATE student SET Sdept = %s WHERE Sno = %s", (Sdept, Sno))
-                connect.commit()
-            except Error as e:
-                messagebox.showerror("数据库错误", f"更新学生信息时发生错误：{str(e)}")
-            finally:
-                messagebox.showinfo("成功", "已修改学号为：%s 的学生信息Sdept" % Sno)
-        if Scholarship:
-            try:
-                cursor = connect.cursor()
+            if Scholarship:
                 cursor.execute("UPDATE student SET Scholarship = %s WHERE Sno = %s", (Scholarship, Sno))
-                connect.commit()
-            except Error as e:
-                messagebox.showerror("数据库错误", f"更新学生奖学金信息时发生错误：{str(e)}")
-            finally:
-                messagebox.showinfo("成功", "已修改学号为：%s 的学生信息Scholarship" % Sno)
+            connect.commit()
+        except Error as e:
+            messagebox.showerror("数据库错误", f"更新学生奖学金信息时发生错误：{str(e)}")
+        finally:
+            messagebox.showinfo("成功", "学生信息已经更新")
 
-        # 清空输入框
-        sno_entry.delete(0, tk.END)
-        sname_entry.delete(0, tk.END)
-        ssex_entry.delete(0, tk.END)
-        sage_entry.delete(0, tk.END)
-        sdept_entry.delete(0, tk.END)
-        scholarship_entry.delete(0, tk.END)
+            # 清空输入框
+            sno_entry.delete(0, tk.END)
+            sname_entry.delete(0, tk.END)
+            ssex_entry.delete(0, tk.END)
+            sage_entry.delete(0, tk.END)
+            sdept_entry.delete(0, tk.END)
+            scholarship_entry.delete(0, tk.END)
 
 
 def modify_stu_grade(sno_entry, cno_entry, grade_entry, connect):
@@ -173,9 +127,12 @@ def modify_stu_grade(sno_entry, cno_entry, grade_entry, connect):
         cursor.execute(update_sql, (Grade, Sno, Cno))
         connect.commit()
     except Error as err:
-        print("Something went wrong: {}".format(err))
+        connect.rollback()
+        messagebox.showinfo("提示", "Something went wrong: {}".format(err))
     finally:
         messagebox.showinfo("成功", "已经将学号为：%s 的学生课程号为：%s 的成绩修改为：%s" % (Sno, Cno, Grade))
+
+        # 清空输入
         sno_entry.delete(0, tk.END)
         cno_entry.delete(0, tk.END)
         grade_entry.delete(0, tk.END)

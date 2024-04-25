@@ -1,7 +1,4 @@
 import tkinter as tk
-from tkinter import messagebox
-import pymysql.cursors
-import ConnectToMySql as Con
 import SqlModify
 
 
@@ -29,9 +26,9 @@ def modify_student_grades(root, connect):
     Grade_entry.pack()
 
     # 创建按钮
-    add_button = tk.Button(window, text="修改学生成绩",
-                           command=lambda: SqlModify.modify_stu_grade(Sno_entry, Cno_entry, Grade_entry, connect))
-    add_button.pack()
+    modify_sc = tk.Button(window, text="修改学生成绩",
+                          command=lambda: SqlModify.modify_stu_grade(Sno_entry, Cno_entry, Grade_entry, connect))
+    modify_sc.pack()
 
     # 启动Tkinter事件循环
     window.mainloop()

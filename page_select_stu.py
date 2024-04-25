@@ -1,12 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from pymysql.err import Error
-import pymysql.cursors
-import ConnectToMySql as Con
 import Debug
-import SqlCreate as Cre
-import SqlModify as Mod
-import SqlSelect
 import func
 
 
@@ -76,7 +71,8 @@ def query_student_info(root, connect):
                            width="25", height="2")
     modify_sno.pack()
 
-    print("no1")
+    if Debug.debug_mod == 1:
+        print("query_student_info")
 
     # 创建字典存储标签和对应的字符串变量
     labels = {

@@ -1,7 +1,7 @@
-import pymysql.cursors
 import tkinter as tk
 from tkinter import messagebox
 import func
+from pymysql.err import Error
 
 
 def add_student(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_entry, scholarship_entry, connect):
@@ -35,28 +35,19 @@ def add_student(sno_entry, sname_entry, ssex_entry, sage_entry, sdept_entry, sch
                 (Sno, Sname, Ssex if Ssex else None, Sage if Sage else None, Sdept if Sdept else None,
                  Scholarship if Scholarship else None))
             connect.commit()
-        except pymysql.err.IntegrityError as e:
-            # 捕获IntegrityError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
-        except pymysql.err.ProgrammingError as e:
-            # 捕获ProgrammingError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
-        except pymysql.err.InternalError as e:
-            # 捕获InternalError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
-        except pymysql.err.OperationalError as e:
-            # 捕获OperationalError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
+        except Error as e:
+            connect.rollback()
+            messagebox.showerror("数据库错误", f"插入数据时发生错误：{str(e)}")
         finally:
-            messagebox.showinfo("成功", "已经添加学号为：%s 的学生信息" % Sno)
+            messagebox.showinfo("成功", "已经插入学号为：%s 的学生信息" % Sno)
 
-        # 清空输入框
-        sno_entry.delete(0, tk.END)
-        sname_entry.delete(0, tk.END)
-        ssex_entry.delete(0, tk.END)
-        sage_entry.delete(0, tk.END)
-        sdept_entry.delete(0, tk.END)
-        scholarship_entry.delete(0, tk.END)
+            # 清空输入框
+            sno_entry.delete(0, tk.END)
+            sname_entry.delete(0, tk.END)
+            ssex_entry.delete(0, tk.END)
+            sage_entry.delete(0, tk.END)
+            sdept_entry.delete(0, tk.END)
+            scholarship_entry.delete(0, tk.END)
 
 
 def add_course(Cno_entry, Cname_entry, Cpno_entry, Ccredit_entry, connect):
@@ -86,26 +77,17 @@ def add_course(Cno_entry, Cname_entry, Cpno_entry, Ccredit_entry, connect):
             cursor.execute("INSERT INTO course (Cno, Cname, Cpno, Ccredit) VALUES (%s, %s, %s, %s)",
                            (Cno, Cname, Cpno if Cpno else None, Ccredit if Ccredit else None))
             connect.commit()
-        except pymysql.err.IntegrityError as e:
-            # 捕获IntegrityError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
-        except pymysql.err.ProgrammingError as e:
-            # 捕获ProgrammingError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
-        except pymysql.err.InternalError as e:
-            # 捕获InternalError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
-        except pymysql.err.OperationalError as e:
-            # 捕获OperationalError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
+        except Error as e:
+            connect.rollback()
+            messagebox.showerror("数据库错误", f"插入数据时发生错误：{str(e)}")
         finally:
             messagebox.showinfo("成功", "已经添加课程号为：%s 的课程信息" % Cno)
 
-        # 清空输入框
-        Cno_entry.delete(0, tk.END)
-        Cname_entry.delete(0, tk.END)
-        Cpno_entry.delete(0, tk.END)
-        Ccredit_entry.delete(0, tk.END)
+            # 清空输入框
+            Cno_entry.delete(0, tk.END)
+            Cname_entry.delete(0, tk.END)
+            Cpno_entry.delete(0, tk.END)
+            Ccredit_entry.delete(0, tk.END)
 
 
 def add_grades(Sno_entry, Cno_entry, Grade_entry, connect):
@@ -133,22 +115,13 @@ def add_grades(Sno_entry, Cno_entry, Grade_entry, connect):
             cursor.execute("INSERT INTO sc (Sno, Cno, Grade) VALUES (%s, %s, %s)",
                            (Sno, Cno, Grade if Grade else None))
             connect.commit()
-        except pymysql.err.IntegrityError as e:
-            # 捕获IntegrityError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
-        except pymysql.err.ProgrammingError as e:
-            # 捕获ProgrammingError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
-        except pymysql.err.InternalError as e:
-            # 捕获InternalError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
-        except pymysql.err.OperationalError as e:
-            # 捕获OperationalError异常
-            messagebox.showerror("数据库错误", f"更新信息时发生错误：{str(e)}")
+        except Error as e:
+            connect.rollback()
+            messagebox.showerror("数据库错误", f"插入数据时发生错误：{str(e)}")
         finally:
             messagebox.showinfo("成功", "已经添加学号为：%s 的学生成绩\n课程号：%s\n成绩：%s" % (Sno, Cno, Grade))
 
-        # 清空输入框
-        Sno_entry.delete(0, tk.END)
-        Cno_entry.delete(0, tk.END)
-        Grade_entry.delete(0, tk.END)
+            # 清空输入框
+            Sno_entry.delete(0, tk.END)
+            Cno_entry.delete(0, tk.END)
+            Grade_entry.delete(0, tk.END)

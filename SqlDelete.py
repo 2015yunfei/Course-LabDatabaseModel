@@ -1,9 +1,6 @@
 import Debug
 from pymysql.err import Error
-import pymysql.cursors
-import tkinter as tk
 from tkinter import messagebox
-import func
 
 
 def delete_course_not_in_sc(connect):
@@ -11,18 +8,22 @@ def delete_course_not_in_sc(connect):
     find_sql = "SELECT course.Cno FROM course WHERE NOT EXISTS (SELECT 1 FROM sc WHERE sc.Cno = course.Cno)"
     try:
         cursor.execute(find_sql)
-    except Error as err:
-        print("Something went wrong: {}".format(err))
+    except Error as e:
+        messagebox.showerror("数据库错误", f"寻找不在sc表中的课程时发生错误：{str(e)}")
         return
 
     result = cursor.fetchall()
+    if result is None:
+        messagebox.showinfo("提示", "所有没有选课信息的课程信息已经被删除")
+        return
 
     delete_sql = "DELETE FROM course WHERE NOT EXISTS (SELECT 1 FROM sc WHERE sc.Cno = course.Cno);"
     try:
         cursor.execute(delete_sql)
         connect.commit()
-    except Error as err:
-        print("Something went wrong: {}".format(err))
+    except Error as e:
+        connect.rollback()
+        messagebox.showerror("数据库错误", f"删除没有选课信息的课程时发生错误：{str(e)}")
         return
 
     if Debug.debug_mod == 1:
@@ -35,6 +36,6 @@ def delete_course_not_in_sc(connect):
         records_str = records_str.join(str("\t" + row['Cno'] + "\n") for row in result)
         records_str = "以下课程已经删除(Cno)：\n" + records_str
 
-        messagebox.showinfo("Records", records_str)
+        messagebox.showinfo("提示", records_str)
     else:
-        messagebox.showinfo("Records", "没有任何课程被删除")
+        messagebox.showinfo("提示", "没有任何课程被删除")

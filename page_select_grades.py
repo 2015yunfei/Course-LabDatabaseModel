@@ -2,9 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from pymysql.err import Error
 from tkinter import ttk
-import pymysql.cursors
 import Debug
-import func
 
 
 def view_grades(root, connect):

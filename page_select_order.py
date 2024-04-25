@@ -2,9 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from pymysql.err import Error
 from tkinter import ttk
-import pymysql.cursors
 import Debug
-import func
 
 
 def view_ranking(root, connect):
@@ -33,12 +31,17 @@ def view_ranking(root, connect):
             result = cursor.fetchall()
         except Error as e:
             messagebox.showerror("数据库错误", f"获得学生成绩时发生错误：{str(e)}")
+            return False
 
         if Debug.debug_mod == 1:
             for row in result:
                 print(row)
 
-    select_stu_by_dept_order()
+        return True
+
+    if not select_stu_by_dept_order():
+        messagebox.showerror("错误", "无法查询学生成绩")
+        return
 
     # 创建一个Treeview控件
     tree = ttk.Treeview(window, columns=(
