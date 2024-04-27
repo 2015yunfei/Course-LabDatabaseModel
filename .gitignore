@@ -140,3 +140,6 @@ scrapy.cfg
 }.idea/jsLibraryMappings.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/pycharm
+
+# PyInstaller 
+build/
