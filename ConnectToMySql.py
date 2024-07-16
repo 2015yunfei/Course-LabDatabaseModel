@@ -2,24 +2,80 @@ import pymysql.cursors
 import Debug
 from pymysql.err import Error
 from tkinter import messagebox
+import json
+import os
+
+
+def load_or_create_db_config(path):
+    # 数据库连接参数
+    db_params = {
+        'host': '47.94.173.36',
+        'port': 3306,
+        'user': '2015yunfei',
+        'password': 'u202112032',
+        'db': 'cse_qyf',
+        'charset': 'utf8mb4'
+    }
+
+    # 检查配置文件是否存在
+    if os.path.exists(path):
+        # 文件存在，加载配置
+        if Debug.debug_mod == 1:
+            print("文件存在，加载配置")
+
+        try:
+            with open(path, 'r') as config_file:
+                config = json.load(config_file)
+                return [config.get('database', None)]  # 使用get方法，如果'database'键不存在，则返回None
+        except json.JSONDecodeError:
+            print(f"Error: The JSON format in the file {path} is incorrect.")
+            return [db_params]
+        except FileNotFoundError:
+            print(f"Error: The file {path} does not exist.")
+            return [db_params]
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            return [db_params]
+    else:
+        # 文件不存在，创建配置文件并写入数据
+        if Debug.debug_mod == 1:
+            print("文件不存在，创建配置文件并写入数据")
+
+        with open(path, 'w') as config_file:
+            json.dump({'database': db_params}, config_file)
+        return [db_params]
 
 
 def connect():
     """
-
+    检查是否存在json文件
+    如果没有则写入自己的数据库连接参数
+    如果存在则使用文件中的数据库连接参数
     :return: 返回一个用于sql连接的字段
     """
-    # 创建连接
-    connection = pymysql.connect(
-        host=Debug.host,
-        port=Debug.port,
-        user=Debug.user,
-        password=Debug.password,
-        db=Debug.db,
-        charset=Debug.charset,
-        cursorclass=pymysql.cursors.DictCursor)
 
-    return connection
+    config_path = 'db_config.json'  # 配置文件路径
+    db_config_array = load_or_create_db_config(config_path)
+
+    # 从数组中提取数据库配置信息
+    db_config = db_config_array[0]  # 假设数组中只有一个字典
+    if db_config is None:
+        if Debug.debug_mod == 1:
+            print("读取json文件出现错误")
+
+        return None
+    else:
+        # 使用提取的配置信息创建数据库连接
+        connection = pymysql.connect(
+            host=db_config['host'],
+            port=db_config['port'],
+            user=db_config['user'],
+            password=db_config['password'],
+            db=db_config['db'],
+            charset=db_config['charset'],
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        return connection
 
 
 def check_table_exists(connection, table_name):
